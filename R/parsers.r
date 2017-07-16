@@ -434,7 +434,7 @@ solr_parse.sr_stats <- function(input, parsetype = 'list', concat = ',') {
           df <- lapply(facetted, function(z){
             lapply(z, function(zz) zz[!names(zz) %in% 'facets'])
           })
-        }
+        } 
       })
 
       datout <- list(data = dat_reg, facet = dat_facet)
@@ -443,6 +443,10 @@ solr_parse.sr_stats <- function(input, parsetype = 'list', concat = ',') {
     temp <- xml_find_all(input, '//lst/lst[@name="stats_fields"]/lst')
     if (parsetype == 'df') {
       # w/o facets
+      dv <- xml_find_first(temp, 'arr[@name="distinctValues"]')
+      dataDV <- paste0(gsub(concat,paste0("\\\\",concat),xml_text(xml_children(dv))), collapse = concat)
+      xml_replace(dv, 'string name="distinctValues"', dataDV)
+
       dat_reg <- bind_rows(stats::setNames(lapply(temp, function(h){
         as_data_frame(popp(sapply(xml_children(h), nmtxt), "facets"))
       }), xml_attr(temp, "name")), .id = "stat")
@@ -457,6 +461,12 @@ solr_parse.sr_stats <- function(input, parsetype = 'list', concat = ',') {
       }), xml_attr(temp, "name"))
       datout <- list(data = dat_reg, facet = dat_facet)
     } else {
+
+      dv <- xml_find_first(temp, 'arr[@name="distinctValues"]')
+      dataDV <- paste0(gsub(concat,paste0("\\\\",concat),xml_text(xml_children(dv))), collapse = concat)
+      xml_replace(dv, 'string name="distinctValues"', dataDV)
+
+
       # w/o facets
       dat_reg <- stats::setNames(lapply(temp, function(h){
         popp(sapply(xml_children(h), nmtxt), "facets")
