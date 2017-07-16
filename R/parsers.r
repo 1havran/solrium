@@ -371,6 +371,9 @@ solr_parse.sr_stats <- function(input, parsetype = 'list', concat = ',') {
     if (parsetype == 'df') {
       dat <- input$stats$stats_fields
 
+      if (length(dat[[1]]$distinctValues > 1)) dat[[1]]$distinctValues <- paste0(
+        dat[[1]]$distinctValues, collapse = concat)
+
       dat2 <- lapply(dat, function(x){
         data.frame(x[!names(x) %in% 'facets'])
       })
