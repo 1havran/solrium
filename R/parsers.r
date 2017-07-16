@@ -445,7 +445,7 @@ solr_parse.sr_stats <- function(input, parsetype = 'list', concat = ',') {
       # w/o facets
       dv <- xml_find_first(temp, 'arr[@name="distinctValues"]')
       dataDV <- paste0(gsub(concat,paste0("\\\\",concat),xml_text(xml_children(dv))), collapse = concat)
-      xml_replace(dv, 'string name="distinctValues"', dataDV)
+      xml_replace(dv, 'arr name="distinctValues"', dataDV)
 
       dat_reg <- bind_rows(stats::setNames(lapply(temp, function(h){
         as_data_frame(popp(sapply(xml_children(h), nmtxt), "facets"))
