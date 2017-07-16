@@ -46,12 +46,14 @@
 #' }
 
 solr_stats <- function(name = NULL, q='*:*', stats.field=NULL, stats.facet=NULL,
-  wt='json', start=0, rows=0, key = NULL, callopts=list(), raw=FALSE, parsetype='df') {
+  wt='json', start=0, rows=0, key = NULL, callopts=list(), raw=FALSE, parsetype='df',
+  stats.calcdistinct=NULL, stats.distinctValues=NULL) {
 
   conn <- solr_settings()
   check_conn(conn)
   check_wt(wt)
-  todonames <- c("q", "stats.field", "stats.facet", "start", "rows", "key", "wt")
+  todonames <- c("q", "stats.field", "stats.facet", "start", "rows", "key", "wt",
+    "stats.calcdistinct", "stats.distinctValues")
   args <- collectargs(todonames)
   args$stats <- 'true'
 
